@@ -1,0 +1,142 @@
+<tool id="ecolishigatoxintyper" name="E coli Shiga toxin typer" version="2.0">
+    <description>performs Shiga toxin typing of Escherichia coli</description>
+    <requirements>
+        <requirement type="package" version="3.7">python</requirement>
+        <requirement type="package" version="5.26.2">perl</requirement>
+        <requirement type="package" version="1.7">perl-bioperl</requirement>
+        <requirement type="package" version="2.9">blast</requirement>
+        <requirement type="package" version="0.39">trimmomatic</requirement>
+        <requirement type="package" version="3.14">spades</requirement>
+        <requirement type="package" version="2.3">skesa</requirement>
+        <requirement type="package" version="0.11.9">fastqc</requirement>
+        <requirement type="package" version="3.8">muscle</requirement>
+    </requirements>
+    <!-- basic error handling -->
+    <stdio>
+        <exit_code range="1:" level="fatal" description="Tool exception" />
+    </stdio>
+    <command>
+<![CDATA[
+      python
+      $__tool_directory__/Ecoli_Shigatoxintyper.py --input_type ${origin.input_type} --log $logfile --output $report_out --shigatoxin $shigatoxin 
+      #if str( $origin.input_type ) == "contigs"
+          -1 $origin.input_1 --input1_name '$origin.input_1.name' 
+      #else
+          -1 $origin.library.input_1 --input1_ext ${origin.library.input_1.ext} --input1_name '${origin.library.input_1.name}' 
+          --html1 $html_file_1 --html1_id $__app__.security.encode_id($html_file_1.dataset.id) --html1_path ${html_file_1.files_path} 
+          #if str( $origin.library.type ) == "paired"
+              -2 $origin.library.input_2 --input2_ext ${origin.library.input_2.ext} --input2_name '${origin.library.input_2.name}' 
+              --html2 $html_file_2 --html2_id $__app__.security.encode_id($html_file_2.dataset.id) --html2_path ${html_file_2.files_path} 
+          #end if
+      #end if
+]]>
+    </command>
+
+    <inputs>
+        <!-- fastq/contigs -->
+        <conditional name="origin">
+			<param name="input_type" type="select" label="Are the input files FASTQ or Contigs (FASTQ files are preferred and give more accurate results)">
+			  <option value="fastq">FASTQ</option>
+			  <option value="contigs">Contigs</option>
+			</param>
+
+			<when value="fastq">
+				<!-- single/paired -->
+				<conditional name="library">
+					<param name="type" type="select" label="Is this single or paired library">
+					  <option value="single">Single-end</option>
+					  <option value="paired">Paired-end</option>
+					</param>
+		
+					<when value="single">
+						<param name="input_1" format="fastqsanger" type="data" label="FASTQ file" help="Must be of datatype &quot;fastqsanger&quot;" />
+					</when>
+					<when value="paired">
+						<param name="input_1" format="fastqsanger" type="data" label="FASTQ file #1" help="Must be of datatype &quot;fastqsanger&quot;" />
+						<param name="input_2" format="fastqsanger" type="data" label="FASTQ file #2" help="Must be of datatype &quot;fastqsanger&quot;" />
+					</when>
+				</conditional>
+			</when>
+			<when value="contigs">
+				<param name="input_1" format="fasta" type="data" label="FASTA Contigs file" help="Must be of datatype &quot;fasta&quot;" />
+		   </when>
+        </conditional>
+    </inputs>
+
+    <!-- define outputs -->
+    <outputs>
+        <data format="html" name="html_file_1" label="${tool.name} on ${on_string}: FastQC Webpage" hidden="true">
+            <filter>origin['input_type'] == 'fastq'</filter>
+        </data>
+        <data format="html" name="html_file_2" label="${tool.name} on ${on_string}: FastQC Webpage reverse" hidden="true">
+            <filter>origin['input_type'] == 'fastq' and origin['library']['type'] == 'paired'</filter>
+        </data>
+        <data name="logfile" format="txt" label="${tool.name} on ${on_string}: log" />
+        <data name="shigatoxin" format="tabular" label="Blastn for Shiga toxin" hidden="true" />
+        <data name="report_out" format="html" label="${tool.name} on ${on_string}: report" />
+    </outputs>
+
+    <tests>
+        <test>
+            <!-- basic test on contigs file -->
+            <param name="input_type" value="contigs" />
+            <param name="input_1" value="a_contigs.fasta" ftype="fasta" />
+            <param name="input1_name" value="a_contigs.fasta" />
+            <output name="report_out" />
+            <output name="shigatoxin" file="shigatoxin" ftype="tabular" />
+        </test>
+    </tests>
+
+    <help>
+**E coli Shigatoxintyper double-check version Overview**
+
+This tool performs various operations:
+
+- Optionally: Quality assessment (FastQC v0.11.9)
+
+- Optionally: Trimming (Trimmomatic v0.39)
+
+- Optionally: Filtering (DUK v20110303)
+
+- Optionally: Assembly (SPAdes v3.14 and SKESA v2.3)
+
+- Optionally: Alignment (MUSCLE v3.8)
+
+- Shigatoxintyping (Blast v2.9 against shiga toxin type databases from the Statens Serum Institut SSI and Technical University of Denmark DTU)
+
+Istituto Superiore di Sanità (ISS)
+
+European Union Reference Laboratory (EU-RL) for Escherichia coli, including Verotoxigenic E. coli (VTEC)
+
+Developer: Arnold Knijn arnold.knijn@iss.it
+
+    </help>
+
+    <citations>
+      <citation type="bibtex">@ARTICLE{andrews_s,
+            author = {Andrews, S},
+            keywords = {bioinformatics, ngs, qc},
+            priority = {2},
+            title = {{FastQC A Quality Control tool for High Throughput Sequence Data}},
+            url = {http://www.bioinformatics.babraham.ac.uk/projects/fastqc/}
+        }</citation>
+      <citation type="bibtex">@ARTICLE{andrews_s,
+            author = {Li, M, Copeland, A, and Han, J},
+            keywords = {bioinformatics, ngs},
+            title = {{DUK – A Fast and Efficient Kmer Based Sequence Matching Tool}},
+            url = {https://www.osti.gov/servlets/purl/1016000/}
+        }</citation>
+      <citation type="bibtex">@ARTICLE{andrews_s,
+            author = {Edwards, RA},
+            keywords = {bioinformatics, ngs},
+            title = {{fastq-pair}},
+            url = {https://github.com/linsalrob/EdwardsLab/}
+        }</citation>
+	  <citation type="doi">10.1093/bioinformatics/btu170</citation>
+      <citation type="doi">10.1089/cmb.2012.0021</citation>
+	  <citation type="doi">10.1186/s13059-018-1540-z</citation>
+      <citation type="doi">10.1186/1471-2105-10-421</citation>
+	  <citation type="doi">10.1093/nar/gkh340</citation>
+      <citation type="doi">10.1128/JCM.00008-15</citation>
+    </citations>
+</tool>
