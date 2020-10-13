@@ -102,7 +102,7 @@ This tool performs various operations:
 
 - Optionally: Alignment (MUSCLE v3.8)
 
-- Shigatoxintyping (Blast v2.9 against shiga toxin type databases from the Statens Serum Institut SSI and Technical University of Denmark DTU)
+- Shigatoxintyping (Blast v2.9 against the Shiga toxin type database from the Statens Serum Institut SSI and Technical University of Denmark DTU)
 
 Istituto Superiore di Sanità (ISS)
 
