@@ -1,5 +1,5 @@
 # shigatoxin-galaxy
-This tool implemented for use in a Galaxy instance (https://galaxyproject.org/) performs Shiga toxin sub-typing of Escherichia coli
+This tool, implemented for use in a Galaxy instance (https://galaxyproject.org/), performs Shiga toxin sub-typing of Escherichia coli
 
 requirements for the tool:  
 python 3.7 (https://www.python.org/)  
