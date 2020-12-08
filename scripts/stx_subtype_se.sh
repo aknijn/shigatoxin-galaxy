@@ -4,7 +4,7 @@ tooldir="$2";
 # ASSEMBLY
 mkdir stxdir;
 skesa --fastq $fastqfile --contigs_out stxdir/skesa.fasta;
-perl $tooldir/scripts/spades.pl spades_contigs spades_contig_stats spades_scaffolds spades_scaffold_stats spades_log NODE spades.py --disable-gzip-output --isolate -t 8 --iontorrent -s fastq:$fastqfile;
+perl $tooldir/scripts/spades.pl spades_contigs spades_contig_stats spades_scaffolds spades_scaffold_stats spades_log NODE spades.py --disable-gzip-output --isolate -t 8 --iontorrent -s $fastqfile;
 perl $tooldir/scripts/filter_spades_repeats.pl -i spades_contigs -t spades_contig_stats -c 0.33 -r 1.75 -l 1000 -o spades_output_with_repeats -u spades_output_without_repeats -n spades_repeat_sequences_only -e 5000 -f spades_discarded_sequences -s spades_summary;
 mv spades_output_without_repeats stxdir/spades.fasta;
 rm -r output_dir;
@@ -15,7 +15,7 @@ dukfilesize=$(wc -c "stxdir/duk.fq" | awk '{print $1}');
 if [ $dukfilesize -gt 0 ]
 then
   skesa --fastq stxdir/duk.fq --contigs_out stxdir/duk_skesa.fasta;
-  perl $tooldir/scripts/spades.pl duk_spades_contigs duk_spades_contig_stats duk_spades_scaffolds duk_spades_scaffold_stats duk_spades_log NODE spades.py --disable-gzip-output --isolate -t 8 --iontorrent -s fastq:stxdir/duk.fq;
+  perl $tooldir/scripts/spades.pl duk_spades_contigs duk_spades_contig_stats duk_spades_scaffolds duk_spades_scaffold_stats duk_spades_log NODE spades.py --disable-gzip-output --isolate -t 8 --iontorrent -s stxdir/duk.fq;
   mv duk_spades_contigs stxdir/duk_spades.fasta;
   rm -r output_dir;
   blastn -query stxdir/duk_skesa.fasta -db $tooldir/data/stx -task blastn -evalue 0.001 -out stxdir/duk_skesa_blastn -outfmt '6 qseqid sseqid sframe qseq' -num_threads 8 -strand both -dust yes -max_target_seqs 1 -perc_identity 95.0;
