@@ -6,7 +6,7 @@
         <requirement type="package" version="1.7">perl-bioperl</requirement>
         <requirement type="package" version="2.9">blast</requirement>
         <requirement type="package" version="0.39">trimmomatic</requirement>
-        <requirement type="package" version="3.14">spades</requirement>
+        <requirement type="package" version="3.14.0">spades</requirement>
         <requirement type="package" version="2.3">skesa</requirement>
         <requirement type="package" version="0.11.9">fastqc</requirement>
         <requirement type="package" version="3.8">muscle</requirement>
