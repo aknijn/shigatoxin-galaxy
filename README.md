@@ -32,3 +32,37 @@ Also a link is given to the FastQC web page (two in case of paired end reads).
 
 
 ![flow chart of the tool](https://github.com/aknijn/shigatoxin-galaxy/blob/master/stx.png?raw=true)
+
+# Installation
+In the [GALAXY ROOT DIR]/tools directory:
+
+```
+git clone https://github.com/aknijn/shigatoxin-galaxy.git
+cd shigatoxin-galaxy/scripts
+chmod u+x duk
+chmod u+x fastq_pair
+chmod u+x stx_*
+```
+
+In the [GALAXY ROOT DIR]/tools/shigatoxin-galaxy/Ecoli_Shigatoxintyper.py file change the value of BASE_URL to that of your Galaxy instance
+
+```
+BASE_URL = 'https://[YOUR_GALAXY_URL]'
+```
+
+Add the following line to the file [GALAXY ROOT DIR]/config/tool_conf.xml:
+
+```
+<tool file="shigatoxin-galaxy/ecolishigatoxintyper.xml" />
+```
+
+Launch the tool from the Galaxy interface to install the dependencies (Galaxy should use conda to install them)
+The dependencies should be installed as an environment in the directory mulled-v1-5f29e6703a37b12366e0e56e69bb93dd1ad2ce2968cf54296eec5f4e127d9763
+
+The first execution will get an error because of Trimmomatic:
+
+```
+cd [GALAXY ROOT DIR]/tool_dependency_dir/_conda/envs/mulled-v1-5f29e6703a37b12366e0e56e69bb93dd1ad2ce2968cf54296eec5f4e127d9763/bin
+chmod 755 ../share/trimmomatic-0.39-1/trimmomatic.jar
+ln -s ../share/trimmomatic-0.39-1/trimmomatic.jar trimmomatic.jar
+```
