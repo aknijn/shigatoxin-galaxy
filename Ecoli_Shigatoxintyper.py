@@ -64,6 +64,7 @@ def __main__():
     subprocess.call("ln -s " + os.popen("which trimmomatic.jar").read().strip() + " trimmomatic.jar", shell=True)
     log = open(args.logfile, 'w')
     log.write("E coli Shiga toxin typer v2.0\n\nTool versions\n=============\n")
+    os.system("ln -s $(readlink -e $(which trimmomatic)).jar trimmomatic.jar")
     if args.input2:
         # PAIRED-END READS, FASTQC
         subprocess.call("python " + TOOL_DIR + "/scripts/rgFastQC.py -i " + args.input1 + " -d " + args.html1_path + " -o " + args.html1 + " -t text1 -f " + args.input1_ext + " -j " + args.input1_name + " -e " + "fastqc", shell=True)

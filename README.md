@@ -22,11 +22,11 @@ consensus sequences on which the final blastn search will be performed against t
 The tool performs four different assemblies: 1. SPAdes on all contigs; 2. SKESA on all contigs; 3. SPAdes on contigs filtered using duk/fastq_pair against STSTDB; 
 4. SKESA on contigs filtered using duk/fastq_pair against STSTDB. On each assembly a blastn search is performed against STSTDB, extracting the best matching contig with an 
 e-value < 0.001 and an identity > 95%. The sequences of all four results are divided between stx1 and stx2 and each four type files put together, thus obtaining two multifasta 
-files: stx1.fasta and stx2.fasta. To both files their corrisponding reference sequences from STSTDB are added and the two resulting files are aligned by MUSCLE. From these 
+files: stx1.fasta and stx2.fasta. To both files their corresponding reference sequences from STSTDB are added and the two resulting files are aligned by MUSCLE. From these 
 alignments the reference sequences are filtered out before all possible consensus sequences are reconstructed. These stx1 and stx2 consensus sequences are combined into a 
 single multifasta file on which a blastn query is performed against the STSTDB, extracting the best matching sequence with an e-value < 0.001 and an identity > 95%. 
 Furthermore, all sequences shorter than 1200 base pairs are filtered out.  
-The tool outputs a report with a table of all matching references with the corrisponding values for the pident, length and positive parameters.  
+The tool outputs a report with a table of all matching references with the corresponding values for the pident, length and positive parameters.  
 A summary is given of the Shiga toxin subtypes that matched between 95% < identity <= 100% with the identity value indicated in parentheses in case of partial matches.  
 Also a link is given to the FastQC web page (two in case of paired end reads).
 
@@ -57,12 +57,3 @@ Add the following line to the file [GALAXY ROOT DIR]/config/tool_conf.xml:
 ```
 
 Launch the tool from the Galaxy interface to install the dependencies (Galaxy should use conda to install them)
-The dependencies should be installed as an environment in the directory mulled-v1-5f29e6703a37b12366e0e56e69bb93dd1ad2ce2968cf54296eec5f4e127d9763
-
-The first execution will get an error because of Trimmomatic:
-
-```
-cd [GALAXY ROOT DIR]/tool_dependency_dir/_conda/envs/mulled-v1-5f29e6703a37b12366e0e56e69bb93dd1ad2ce2968cf54296eec5f4e127d9763/bin
-chmod 755 ../share/trimmomatic-0.39-1/trimmomatic.jar
-ln -s ../share/trimmomatic-0.39-1/trimmomatic.jar trimmomatic.jar
-```
